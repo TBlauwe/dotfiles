@@ -2,11 +2,16 @@
 
 Personal repository to manage dotfiles across machines using [chezmoi](https://www.chezmoi.io/).
 
+## 🚀 QuickStart 
+
+On Unix / MacOs:
+
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply TBlauwe 
 ```
 
-or
+
+On Windows:
 
 ```pwsh
 iex "&{$(irm 'https://get.chezmoi.io/ps1')}" --init --apply TBLauwe
