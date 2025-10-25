@@ -1,0 +1,114 @@
+# ------------------------------------------------------------------------------
+# 	ALIAS
+# ------------------------------------------------------------------------------
+
+# ----[ vim ]----------------------------------------------------------------
+# Calls nvim
+Set-Alias -Name vim nvim
+
+
+# ----[ profile ]----------------------------------------------------------------
+# Edit Powershell profile file
+function profile {
+	if (-not (Test-Path $PROFILE)) {
+   		New-Item -Path $PROFILE -ItemType File -Force
+	}
+	nvim $PROFILE
+}
+
+
+# ----[ nvimrc ]----------------------------------------------------------------
+# Edit NeoVim configuration file
+function vim_init {
+    nvim $env:LOCALAPPDATA\nvim\init.lua
+}
+
+
+# ----[ cd-nvim ]---------------------------------------------------------------
+# Edit NeoVim configuration file
+function cd_vim {
+    cd $env:LOCALAPPDATA\nvim
+}
+
+
+# ------------------------------------------------------------------------------
+#   DEV
+# ------------------------------------------------------------------------------
+
+# ----[ vs ]--------------------------------------------------------------------
+# Setup Visual Studio Environment
+function vs {
+    param(
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("amd64", "x86", "arm", "arm64")]
+        [string]$Architecture = "amd64" # Default value is set here
+    )
+
+    # Use the environment variable for Program Files (x86)
+    $VsDevCmdPath = "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1"
+
+    # --- Pre-Execution Checks ---
+    if (-not (Test-Path -Path $VsDevCmdPath)) {
+        Write-Error "Launch-VsDevShell.ps1 not found at '$VsDevCmdPath'. Please verify your Visual Studio 2022 Community installation path."
+        Write-Error "The script is looking for VS 2022 Community. If you have a different version/edition, you must update the path in this script."
+        return
+    }
+
+    # --- Construct and Execute Command ---
+    Write-Host "Attempting to initialize Visual Studio Developer Environment for architecture: $Architecture" -ForegroundColor Cyan
+    Write-Host "Source path: $VsDevCmdPath"
+
+    # Save current location as the vs script change our current directory
+    Push-Location
+
+    # Use the call operator (&) to execute the batch file
+    # This will execute the batch file and apply changes within the current scope.
+    & $VsDevCmdPath -Arch $Architecture 
+
+    # Get back to our saved location
+    Pop-Location
+
+    # Check if installation is correct
+    if (Get-Command "cmake" -ErrorAction SilentlyContinue) {
+        Write-Host "Visual Studio environment successfully configured for $Architecture build tools." -ForegroundColor Green
+    } else {
+        Write-Host "Error: cmake not found. Check architecture or script path." -ForegroundColor Red
+    }
+}
+
+
+# ------------------------------------------------------------------------------
+#   CEA	
+# ------------------------------------------------------------------------------
+# ----[ aidge ]-----------------------------------------------------------------
+# Move to aidge folder
+function cd_aidge {
+    cd $HOME/dev/aidge
+}
+
+
+# ----[ aidge-core ]------------------------------------------------------------
+# Move to aidge_core folder
+function cd_aidge_core {
+    cd $HOME/dev/aidge/aidge/aidge_core
+}
+
+
+# ----[ aidge-backend-cpu ]------------------------------------------------------------
+# Move to aidge_backend_cpu folder
+function cd_aidge_backend_cpu {
+    cd $HOME/dev/aidge/aidge/aidge_backend_cpu/  
+}
+
+
+# ----[ ack ]-------------------------------------------------------------------
+# Move to Aidge - CMake Kit folder
+function cd_ack {
+    cd $HOME/dev/aidge-cmake-kit
+}
+
+
+# ----[ aidge-venv ]------------------------------------------------------------
+# Activate Aidge virtual environement
+Set-Alias -Name aidge_venv $HOME/dev/aidge/.venv/Scripts/Activate.ps1
+
