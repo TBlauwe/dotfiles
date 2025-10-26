@@ -56,10 +56,53 @@ function Test-CliToolAvailability {
         [Parameter(Mandatory=$true)]
         [string]$Command
     )
-    
+
     # Get-Command will throw an error if the command is not found; 
     # -ErrorAction SilentlyContinue suppresses this.
     return (Get-Command $Command -ErrorAction SilentlyContinue) -ne $null
+}
+
+
+function Add-ProfileLine {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Line,
+        # Defaults to $Profile (Current User, Current Host)
+        [string]$Path = $Profile,
+        # If set, the profile will be dot-sourced immediately after adding the line.
+        [switch]$Reload
+    )
+
+    # 1. Ensure the profile directory exists
+    $ProfileDir = Split-Path -Path $Path -Parent
+    if (-not (Test-Path -Path $ProfileDir -ErrorAction SilentlyContinue)) {
+        Write-Verbose "Creating profile directory: $ProfileDir"
+        New-Item -Path $ProfileDir -ItemType Directory -Force | Out-Null
+    }
+
+    # 2. Check if the profile file exists and create it if necessary
+    if (-not (Test-Path -Path $Path -ErrorAction SilentlyContinue)) {
+        Write-Verbose "Creating profile file: $Path"
+        New-Item -Path $Path -ItemType File -Force | Out-Null
+    }
+
+    # 3. Check for duplicates before appending
+    $Content = Get-Content -Path $Path -Raw
+    if ($Content -notmatch [regex]::Escape($Line)) {
+        Write-Host "✅ Appending line to profile: $($Path)" -ForegroundColor Green
+        
+        # Append the line, ensuring a blank line separates it from previous content
+        Add-Content -Path $Path -Value "`n$Line"
+        
+        # 4. Reload the profile if the -Reload switch was used
+        if ($Reload) {
+            Write-Host "🔄 Reloading profile..." -ForegroundColor Cyan
+            . $Path
+        }
+    } else {
+        Write-Host "ℹ️ Line already exists in profile: $($Path). Skipping." -ForegroundColor Yellow
+    }
 }
 
 
@@ -74,14 +117,12 @@ function Install-ToolIfMissing {
         [string]$Script
     )
 
+    $activityId = 100 
     $tool = [ToolInstall]::new()
     $tool.Name = $Name
-    
-    # Define a unique ID for the progress bar used inside this function (if we wanted a nested bar)
-    $activityId = 100 
 
     Write-Progress -Activity "Tool: $Name" -Status "Checking if already installed..." -PercentComplete 0 -Id $activityId
-    
+
     # 1. Check if the tool is already installed
     if (Test-CliToolAvailability -Command $Command) {
         Write-Progress -Activity "Tool: $Name" -Status "$Name found. Retrieving version ..." -PercentComplete 90 -Id $activityId
@@ -100,13 +141,31 @@ function Install-ToolIfMissing {
 
     # 2. Execute the installation script block
     try {
+
+        Write-Host "-----[ 🚧 Installing $Name 🚧 ]-----"
         Invoke-Expression $Script
 
-        Write-Progress -Activity "Tool: $Name" -Status "Verifying installation..." -PercentComplete 80 -Id $activityId
-        
+        Write-Progress -Activity "Tool: $Name" -Status "Verifying installation..." -PercentComplete 70 -Id $activityId
+
+        # Necessary to let env variables be set.
+        # refreshenv from choco, does not work
+        # Only the $env:Path ... does not works
+        # Only the combination of the two works 
+        # (the other 
+        Sleep -Seconds 2
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    
         if (Test-CliToolAvailability -Command $Command) {
-            Write-Progress -Activity "Tool: $Name" -Status "✅ Verification successful. " -PercentComplete 100 -Id $activityId -Completed
+            Write-Progress -Activity "Tool: $Name" -Status "✅ Verification successful. " -PercentComplete 80 -Id $activityId -Completed
             $tool.Status = [ToolStatus]::Installed
+            Write-Progress -Activity "Tool: $Name" -Status "$Name found. Retrieving version ..." -PercentComplete 90 -Id $activityId
+            try {
+                $tool.Version = & $Command --version 2>&1
+                Write-Progress -Activity "Tool $Name" -Status "Version found: $($tool.Version)" -PercentComplete 100 -Id $activityId -Completed 
+            }catch{
+                $tool.Version = "Undefined"
+                Write-Progress -Activity "Tool: $Name" -Status "Version not found" -PercentComplete 100 -Id $activityId -Completed 
+            }
             return $tool
         } else {
             Write-Progress -Activity "Tool: $Name" -Status "❌ Verification failed. Tool not found in path." -PercentComplete 100 -Id $activityId -Completed
@@ -130,10 +189,14 @@ function Install-ToolIfMissing {
 
 
 # ------------------------------------------------------------------------------
-#   MAIN EXECUTION
+#   TOOLS
 # ------------------------------------------------------------------------------
-# 1. Define custom installation steps for Chocolatey (and other potential tools)
-$chocoInstallationScript = @'
+$tools = @()
+
+$tools += @{ 
+  Name = 'chocolatey'; 
+  Command = 'choco'; 
+  Script = @'
     # Set Execution Policy to Bypass for the current PowerShell process only.
     Set-ExecutionPolicy Bypass -Scope Process -Force;
     
@@ -142,20 +205,26 @@ $chocoInstallationScript = @'
     
     # Download and execute the official Chocolatey install script.
     iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-'@
+'@}
 
-# Define the list of tools to install, using the enum for initial status
-$tools = @(
-    @{ Name = 'chocolatey'; Command = 'choco'; Script = $chocoInstallationScript; }
-)
+$tools += @{ 
+  Name = "Oh My Posh"; 
+  Command = "oh-my-posh"; 
+  Script = @'
+    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))
+'@}
+
+
+# ------------------------------------------------------------------------------
+#   MAIN EXECUTION
+# ------------------------------------------------------------------------------
+Write-Host "--------------------------------------------------------------------------------"
+Write-Host " ⚒️ SETUP: Development Environment for Windows"
+Write-Host "--------------------------------------------------------------------------------"
 
 $currentToolIndex = 0
 $progressId       = 1 # ID for the main progress bar
 $statusLine       = ""
-
-Write-Host "--------------------------------------------------------------------------------"
-Write-Host " ⚒️ SETUP: Development Environment for Windows"
-Write-Host "--------------------------------------------------------------------------------"
 
 # Loop through all tools and install if missing
 for ($i = 0; $i -lt $tools.Count; $i++) {
@@ -164,7 +233,7 @@ for ($i = 0; $i -lt $tools.Count; $i++) {
     
     # Update the main progress bar before starting the tool
     Write-Progress -Activity "Installing tools" `
-                   -Status "$($tool.Name) (Step $i of $($tools.Count))" `
+                   -Status "$($tool.Name) (Step $($i + 1) of $($tools.Count))" `
                    -PercentComplete ($i / $tools.Count * 100) `
                    -Id $progressId
     
@@ -184,13 +253,15 @@ for ($i = 0; $i -lt $tools.Count; $i++) {
         default                        { "⚫" }
     }
     $suffix = switch ($result.Status) {
-        ([ToolStatus]::Installed)      { "installed " }
-        ([ToolStatus]::AlreadyPresent) { "already installed" }
-        ([ToolStatus]::Failed)         { "" }
+        ([ToolStatus]::Installed)      { "($($result.Version)) - Installed " }
+        ([ToolStatus]::AlreadyPresent) { "($($result.Version)) - Already installed" }
+        ([ToolStatus]::Failed)         { "- Installation failed. See errors above." }
         default                        { "" }
     }
 
-    Write-Host "$prefix $($result.Name) $($result.Version) $suffix"
+    Write-Host "$prefix $($result.Name) $suffix"
 }
 
 Write-Progress -Activity "Installing Tools" -Status "All checks complete." -Completed -Id $progressId
+Write-Host "" 
+Write-Host "ℹ️ Restart terminal to load changes !"

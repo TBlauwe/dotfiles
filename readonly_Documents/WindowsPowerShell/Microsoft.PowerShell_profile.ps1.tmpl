@@ -122,3 +122,9 @@ function cd_ack {
 # Activate Aidge virtual environement
 Set-Alias -Name aidge_venv $HOME/dev/aidge/.venv/Scripts/Activate.ps1
 
+
+# ------------------------------------------------------------------------------
+# 	Oh My Posh
+# ------------------------------------------------------------------------------
+# Must be last !
+oh-my-posh init pwsh --config '~/.tblauwe-theme.omp.json' | Invoke-Expression
