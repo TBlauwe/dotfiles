@@ -2,7 +2,17 @@
 
 Personal repository to manage dotfiles across machines using [chezmoi](https://www.chezmoi.io/).
 
-## 🚀 QuickStart 
+## 🔧 Required
+
+* NPM
+```
+nvm install lts
+nvm on
+npm install -g neovim
+```
+
+
+## 🚀 QuickStart
 
 On Unix / MacOs:
 
@@ -16,3 +26,4 @@ On Windows:
 ```pwsh
 iex "&{$(irm 'https://get.chezmoi.io/ps1')}" --init --apply TBLauwe
 ```
+
