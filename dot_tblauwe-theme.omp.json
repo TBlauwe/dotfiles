@@ -13,6 +13,7 @@
     "backgroundDim":    "#293249",
     "onBackground":     "#daf0e3",
     "text":             "#ffffff",
+    "textDim":          "#999999",
     "accent1":          "#47b474",
     "accent2":          "#47b4a2",
     "accent3":          "#47b4bb",
@@ -38,12 +39,23 @@
       "alignment": "left",
       "segments": [
         {
+          "type": "text",
+          "style": "plain",
+          "template": "\u256d\u2500",
+          "foreground": "p:textDim"
+        },
+        {
           "type": "shell",
           "style": "diamond",
-          "leading_diamond": "\u256d\u2500\ue0b6",
-          "template": "\uf120 {{ .Name }} ",
+          "leading_diamond": "\ue0b6",
+          "template": "{{ .Name }} ",
           "foreground": "p:text",
-          "background": "p:accent1"
+          "background": "p:accent1",
+          "properties": {
+              "mapped_shell_names": {
+                "pwsh": "PS"
+              }
+          }
         },
         {
           "template": "<parentBackground>\ue0b0</> \uf292 ",
@@ -53,17 +65,17 @@
           "style": "diamond"
         },
         {
+          "type": "path",
+          "style": "powerline",
           "properties": {
             "folder_icon": " \uf07b ",
-            "home_icon": "\ue617",
-            "style": "folder"
+            "home_icon": "\ue617 ",
+            "style": "mixed"
           },
-          "template": " \uf07b\uea9c {{ .Path }} ",
+          "template": " {{ .Path }} ",
           "powerline_symbol": "\ue0b0",
           "foreground": "p:text",
-          "background": "p:accent2",
-          "type": "path",
-          "style": "powerline"
+          "background": "p:accent3"
         },
         {
           "properties": {
@@ -71,10 +83,10 @@
             "fetch_status": true,
             "fetch_upstream_icon": true
           },
-          "template": "{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#ef5350> \uf046 {{ .Staging.String }}</>{{ end }} ",
+          "template": " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#ef5350> \uf046 {{ .Staging.String }}</>{{ end }} ",
           "powerline_symbol": "\ue0b0",
           "foreground": "p:text",
-          "background": "p:accent3",
+          "background": "p:accent4",
           "type": "git",
           "style": "powerline"
         },
@@ -86,7 +98,7 @@
           "trailing_diamond": "\ue0b4",
           "template": " \ueba2 {{ .FormattedMs }}\u2800",
           "foreground": "p:text",
-          "background": "p:accent4",
+          "background": "p:accent5",
           "type": "executiontime",
           "style": "diamond"
         }
@@ -237,50 +249,31 @@
           "style": "diamond"
         },
         {
-          "properties": {
-            "linux": "\ue712",
-            "macos": "\ue711",
-            "windows": "\ue70f"
-          },
-          "leading_diamond": "\ue0b6",
-          "trailing_diamond": "<transparent,background>\ue0b2</>",
-          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
-          "foreground": "#222222",
-          "background": "#b2bec3",
-          "type": "os",
-          "style": "diamond"
-        },
-        {
+          "type": "battery",
+          "style": "powerline",
+          "template": " {{ if not .Error }}{{ .Icon }}{{ .Percentage }}{{ end }}{{ .Error }}\uf295 ",
           "properties": {
             "charged_icon": "\uf240 ",
             "charging_icon": "\uf1e6 ",
             "discharging_icon": "\ue234 "
           },
-          "template": " {{ if not .Error }}{{ .Icon }}{{ .Percentage }}{{ end }}{{ .Error }}\uf295 ",
-          "foreground": "#262626",
-          "powerline_symbol": "\ue0b2",
-          "background": "#f36943",
-          "type": "battery",
-          "style": "powerline",
-          "background_templates": [
+          "foreground": "p:text",
+          "foreground_templates": [
             "{{if eq \"Charging\" .State.String}}#b8e994{{end}}",
             "{{if eq \"Discharging\" .State.String}}#fff34e{{end}}",
-            "{{if eq \"Full\" .State.String}}#33DD2D{{end}}"
-          ],
-          "invert_powerline": true
+            "{{if eq \"Full\" .State.String}}p:accent1{{end}}"
+          ]
         },
         {
-          "properties": {
-            "time_format": "_2 Jan - 15:04"
-          },
-          "leading_diamond": "\ue0b2",
-          "trailing_diamond": "\ue0b4",
-          "template": " \uf073 {{ .CurrentDate | date .Format }} ",
-          "foreground": "p:text",
-          "background": "p:accent3",
-          "type": "time",
+          "type": "os",
           "style": "diamond",
-          "invert_powerline": true
+          "properties": {
+            "linux": "\ue712",
+            "macos": "\ue711",
+            "windows": "\ue70f"
+          },
+          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
+          "foreground": "p:text"
         }
       ]
     },
@@ -290,14 +283,24 @@
       "newline": true,
       "segments": [
         {
-          "foreground": "p:accent1",
+          "foreground": "p:textDim",
           "style": "plain",
           "template": "\u2570\u2500",
           "type": "text"
         },
         {
-          "foreground": "#e0f8ff",
-          "foreground_templates": ["{{ if gt .Code 0 }}#ef5350{{ end }}"],
+          "type": "time",
+          "style": "plain",
+          "properties": {
+            "time_format": "_2 Jan | 15:04:00"
+          },
+          "template": "[\uf073 {{ .CurrentDate | date .Format }} \uf017 ] ",
+          "foreground_templates": ["{{ if gt .Code 0 }}p:accent6Dim{{ end }}"],
+          "foreground": "p:textDim"
+        },
+        {
+          "foreground": "#p:text",
+          "foreground_templates": ["{{ if gt .Code 0 }}p:accent6{{ end }}"],
           "properties": {
             "always_enabled": true
           },
