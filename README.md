@@ -4,11 +4,10 @@ Personal repository to manage dotfiles across machines using [chezmoi](https://w
 
 ## 🔧 Required
 
-* NPM
-```
-nvm install lts
-nvm on
-npm install -g neovim
+* Powershell 7+ is recommended.
+
+```pwsh
+msiexec.exe /package PowerShell-7.5.4-win-x64.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 DISABLE_TELEMETRY=1 ADD_PATH=1
 ```
 
 

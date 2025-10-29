@@ -295,7 +295,6 @@
             "time_format": "_2 Jan | 15:04:00"
           },
           "template": "[\uf073 {{ .CurrentDate | date .Format }} \uf017 ] ",
-          "foreground_templates": ["{{ if gt .Code 0 }}p:accent6Dim{{ end }}"],
           "foreground": "p:textDim"
         },
         {
