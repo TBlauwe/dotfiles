@@ -26,6 +26,12 @@
     "accent4Bright":    "#9297bc",
     "accent5Bright":    "#f2e5f1",
     "accent6Bright":    "#fddede",
+    "accent1Medium":    "#358757",
+    "accent2Medium":    "#35877a",
+    "accent3Medium":    "#34878d",
+    "accent4Medium":    "#696f92",
+    "accent5Medium":    "#935a92",
+    "accent6Medium":    "#cc3232",
     "accent1Dim":       "#235a39",
     "accent2Dim":       "#235a51",
     "accent3Dim":       "#225a5e",
@@ -45,50 +51,58 @@
           "foreground": "p:textDim"
         },
         {
-          "type": "shell",
+          "type": "os",
           "style": "diamond",
           "leading_diamond": "\ue0b6",
-          "template": "{{ .Name }} ",
+          "template": "{{ if .WSL }}WSL at {{ end }}{{.Icon}}",
           "foreground": "p:text",
-          "background": "p:accent1",
+          "background": "p:accent1Medium",
           "properties": {
-              "mapped_shell_names": {
-                "pwsh": "PS"
-              }
+            "linux": "\ue712",
+            "macos": "\ue711",
+            "windows": "\ue70f"
           }
         },
         {
-          "template": "<parentBackground>\ue0b0</> \uf292 ",
-          "foreground": "#FFFB38",
-          "background": "#ef5350",
+          "type": "shell",
+          "style": "plain",
+          "template": " {{ .Name }} ",
+          "foreground": "p:text",
+          "background": "p:accent1Medium",
+          "properties": {
+            "mapped_shell_names": {
+              "pwsh": "PS"
+            }
+          }
+        },
+        {
           "type": "root",
-          "style": "diamond"
+          "style": "diamond",
+          "template": "<parentBackground>\ue0b0</> \uf292 ",
+          "foreground": "<parentForeground>",
+          "background": "<parentBackground>"
         },
         {
           "type": "path",
-          "style": "powerline",
+          "style": "plain",
           "properties": {
-            "folder_icon": " \uf07b ",
-            "home_icon": "\ue617 ",
             "style": "mixed"
           },
           "template": " {{ .Path }} ",
-          "powerline_symbol": "\ue0b0",
           "foreground": "p:text",
-          "background": "p:accent3"
+          "background": "p:accent3Medium"
         },
         {
+          "type": "git",
+          "style": "powerline",
           "properties": {
             "branch_icon": "\ue725 ",
             "fetch_status": true,
             "fetch_upstream_icon": true
           },
           "template": " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#ef5350> \uf046 {{ .Staging.String }}</>{{ end }} ",
-          "powerline_symbol": "\ue0b0",
           "foreground": "p:text",
-          "background": "p:accent4",
-          "type": "git",
-          "style": "powerline"
+          "background": "p:accent4Medium"
         },
         {
           "properties": {
@@ -98,7 +112,7 @@
           "trailing_diamond": "\ue0b4",
           "template": " \ueba2 {{ .FormattedMs }}\u2800",
           "foreground": "p:text",
-          "background": "p:accent5",
+          "background": "p:accent5Medium",
           "type": "executiontime",
           "style": "diamond"
         }
@@ -249,6 +263,22 @@
           "style": "diamond"
         },
         {
+          "type": "sysinfo",
+          "style": "plain",
+          "foreground": "p:textDim",
+          "leading_diamond": "\ue0b2",
+          "template": "\ue266 {{ (div ((sub .PhysicalTotalMemory .PhysicalAvailableMemory)|float64) 1073741824.0) }}/{{ (div .PhysicalTotalMemory 1073741824.0) }}GB "
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "properties": {
+            "time_format": "_2 Jan"
+          },
+          "template": "\uf073 {{ .CurrentDate | date .Format }}",
+          "foreground": "p:textDim"
+        },
+        {
           "type": "battery",
           "style": "powerline",
           "template": " {{ if not .Error }}{{ .Icon }}{{ .Percentage }}{{ end }}{{ .Error }}\uf295 ",
@@ -263,17 +293,6 @@
             "{{if eq \"Discharging\" .State.String}}#fff34e{{end}}",
             "{{if eq \"Full\" .State.String}}p:accent1{{end}}"
           ]
-        },
-        {
-          "type": "os",
-          "style": "diamond",
-          "properties": {
-            "linux": "\ue712",
-            "macos": "\ue711",
-            "windows": "\ue70f"
-          },
-          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
-          "foreground": "p:text"
         }
       ]
     },
@@ -292,9 +311,16 @@
           "type": "time",
           "style": "plain",
           "properties": {
-            "time_format": "_2 Jan | 15:04:00"
+            "time_format": "15:04"
           },
-          "template": "[\uf073 {{ .CurrentDate | date .Format }} \uf017 ] ",
+          "template": "\uf017 {{ .CurrentDate | date .Format }} ",
+          "foreground": "p:textDim"
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "powerline_symbol": "\ue0b0",
+          "template": "\uf2c0 <p:accent2>{{ .UserName }}</>{{ if .SSHSession }}\ueba9<p:accent4>{{ .HostName }}</>{{ end }} ",
           "foreground": "p:textDim"
         },
         {
@@ -304,7 +330,7 @@
             "always_enabled": true
           },
           "style": "plain",
-          "template": "$ ",
+          "template": "\uf105 ",
           "type": "status"
         }
       ]
