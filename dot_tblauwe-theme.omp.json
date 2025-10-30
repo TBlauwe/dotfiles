@@ -86,7 +86,7 @@
           "type": "path",
           "style": "plain",
           "properties": {
-            "style": "mixed"
+            "style": "folder"
           },
           "template": " {{ .Path }} ",
           "foreground": "p:text",
@@ -324,16 +324,22 @@
           "foreground": "p:textDim"
         },
         {
-          "foreground": "#p:text",
+          "alias": "ShellSymbol",
+          "type": "status",
+          "style": "plain",
+          "foreground": "p:textDim",
           "foreground_templates": ["{{ if gt .Code 0 }}p:accent6{{ end }}"],
           "properties": {
             "always_enabled": true
           },
-          "style": "plain",
-          "template": "\uf105 ",
-          "type": "status"
+          "template": "\uf105 "
+
         }
       ]
     }
-  ]
+  ],
+  "transient_prompt": {
+    "foreground": "p:textDim",
+    "template": "{{ now | date \"15:04\" }} <p:accent2>{{ .UserName }}</>@<p:accent3>{{ .HostName }}</> <p:accent4>{{ .PWD }}</> \uf105 "
+  }
 }
