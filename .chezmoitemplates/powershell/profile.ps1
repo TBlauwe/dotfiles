@@ -79,7 +79,7 @@ function vs {
 #   CEA	
 # ------------------------------------------------------------------------------
 $ACK                      = "$HOME/dev/aidge-cmake-kit"
-$AIDGE_                   = "$HOME/dev/aidge"
+$AIDGE                    = "$HOME/dev/aidge"
 $AIDGE_CORE               = "$HOME/dev/aidge/aidge/aidge_core"
 $AIDGE_BACKEND_CPU        = "$HOME/dev/aidge/aidge/aidge_backend_cpu"
 $AIDGE_BACKEND_CUDA       = "$HOME/dev/aidge/aidge/aidge_backend_cuda"
