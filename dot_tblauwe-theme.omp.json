@@ -84,12 +84,16 @@
           "background": "<parentBackground>"
         },
         {
-          "type": "path",
+          "type": "session",
           "style": "plain",
-          "properties": {
-            "style": "folder"
-          },
-          "template": " {{ .Path }} ",
+          "template": " \uf2c0 {{ .UserName }} ",
+          "foreground": "p:text",
+          "background": "p:accent2Medium"
+        },
+        {
+          "type": "session",
+          "style": "plain",
+          "template": "{{ if .SSHSession }} \ueba9 {{ .HostName }}{{ end }} ",
           "foreground": "p:text",
           "background": "p:accent3Medium"
         },
@@ -314,15 +318,19 @@
           "properties": {
             "time_format": "15:04"
           },
-          "template": "\uf017 {{ .CurrentDate | date .Format }} ",
+          "template": "\uf017 {{ .CurrentDate | date .Format }} | ",
           "foreground": "p:textDim"
         },
         {
-          "type": "session",
+          "type": "path",
           "style": "plain",
-          "powerline_symbol": "\ue0b0",
-          "template": "\uf2c0 <p:accent2>{{ .UserName }}</>{{ if .SSHSession }}\ueba9<p:accent4>{{ .HostName }}</>{{ end }} ",
-          "foreground": "p:textDim"
+          "properties": {
+            "style": "agnoster_short",
+            "folder_separator_icon": "/",
+            "max_depth": 2
+          },
+          "template": "\uf115  {{ .Path }} ",
+          "foreground": "p:accent3"
         },
         {
           "alias": "ShellSymbol",
