@@ -138,7 +138,7 @@
           "type": "time",
           "style": "plain",
           "properties": {
-            "time_format": "_2 Jan"
+            "time_format": "02/01/06 \uf017 15:04"
           },
           "template": "\uf073 {{ .CurrentDate | date .Format }}",
           "foreground": "p:textDim"
@@ -171,15 +171,6 @@
           "style": "plain",
           "template": "\u2570\u2500",
           "type": "text"
-        },
-        {
-          "type": "time",
-          "style": "plain",
-          "properties": {
-            "time_format": "15:04"
-          },
-          "template": "\uf017 {{ .CurrentDate | date .Format }} ",
-          "foreground": "p:textDim"
         },
         {
           "properties": {
