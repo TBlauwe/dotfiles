@@ -39,7 +39,7 @@
     "accent5Dim":       "#693568",
     "accent6Dim":       "#a40606"
   },
-  "console_title_template": "{{.UserName}}@{{.HostName}} in {{.Folder}}",
+  "console_title_template": "{{.Folder}}",
   "blocks": [
     {
       "type": "prompt",

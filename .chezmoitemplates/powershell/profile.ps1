@@ -99,6 +99,17 @@ $AIDGE_QUANTIZATION       = "$HOME/dev/aidge/aidge/aidge_quantization"
 # Activate Aidge virtual environement
 Set-Alias -Name aidge_venv $HOME/dev/aidge/.venv/Scripts/Activate.ps1
 
+# ----[ SSH To CEA IS server ]------------------------------------------------------------
+function Invoke-SshIS {
+    & ssh td284617@is156025
+}
+Set-Alias -Name ssh-is Invoke-SshIS
+
+function Invoke-SshUnixCI {
+    & ssh admin-local@is248302
+}
+Set-Alias -Name ssh-unix-ci Invoke-SshUnixCI
+
 
 # ------------------------------------------------------------------------------
 # 	Oh My Posh
