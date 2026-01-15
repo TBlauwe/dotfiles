@@ -78,7 +78,6 @@ function vs {
 # ------------------------------------------------------------------------------
 #   CEA	
 # ------------------------------------------------------------------------------
-$ACK                      = "$HOME/dev/aidge-cmake-kit"
 $AIDGE                    = "$HOME/dev/aidge"
 $AIDGE_CORE               = "$HOME/dev/aidge/aidge/aidge_core"
 $AIDGE_BACKEND_CPU        = "$HOME/dev/aidge/aidge/aidge_backend_cpu"
@@ -93,6 +92,7 @@ $AIDGE_LEARNING           = "$HOME/dev/aidge/aidge/aidge_learning"
 $AIDGE_MODEL_EXPLORER     = "$HOME/dev/aidge/aidge/aidge_model_explorer"
 $AIDGE_ONNX               = "$HOME/dev/aidge/aidge/aidge_onnx"
 $AIDGE_QUANTIZATION       = "$HOME/dev/aidge/aidge/aidge_quantization"
+$ACK                      = "$AIDGE/aidge-cmake-kit"
 
 
 # ----[ aidge-venv ]------------------------------------------------------------
@@ -109,6 +109,13 @@ function Invoke-SshUnixCI {
     & ssh admin-local@is248302
 }
 Set-Alias -Name ssh-unix-ci Invoke-SshUnixCI
+
+function Invoke-Regen-Ack {
+  Push-Location $ACK
+  cmake -S . -B build/
+  Pop-Location
+}
+Set-Alias -Name regen-ack Invoke-Regen-Ack
 
 
 # ------------------------------------------------------------------------------
