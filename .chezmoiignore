@@ -7,7 +7,7 @@ README.md
 LICENSE
 
 # Lock files
-.config/nvim/lazy-lock.json
+dot_config/nvim/lazy-lock.json
 
 # Machine-specific files
 .gitconfig.local
@@ -40,7 +40,9 @@ LICENSE
 
 # Ignore Windows specific files on non-windows machine
 {{ if ne .chezmoi.os "windows" }}
-./run_once_setup_dev_env.ps1
+Documents/*
+.chezmoiscripts/setup_dev_env.ps1
+_symlink-neovim-config_windows.ps1
 {{ end }}
 
 
