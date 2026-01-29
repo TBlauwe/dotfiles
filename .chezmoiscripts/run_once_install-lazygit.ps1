@@ -1,5 +1,3 @@
-# Windows Installation (via Winget)
-# PowerShell script block
 if (Get-Command lazygit -ErrorAction SilentlyContinue) {
     Write-Host "Lazygit is already installed."
 } else {
