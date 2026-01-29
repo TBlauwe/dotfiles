@@ -34,7 +34,7 @@ dot_config/nvim/lazy-lock.json
 
 # Ignore Linux specific files on non-Linux machine
 {{ if ne .chezmoi.os "linux" }}
-# TODO
+.chezmoiscripts/install-lazygit.sh
 {{ end }}
 
 
@@ -42,6 +42,7 @@ dot_config/nvim/lazy-lock.json
 {{ if ne .chezmoi.os "windows" }}
 Documents/*
 .chezmoiscripts/setup_dev_env.ps1
+.chezmoiscripts/install-lazygit.ps1
 _symlink-neovim-config_windows.ps1
 {{ end }}
 

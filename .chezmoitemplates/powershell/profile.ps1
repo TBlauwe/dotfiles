@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------
 # 	COMMON
 # ------------------------------------------------------------------------------
-New-Alias grep findstr
 
 # ----[ profile ]----------------------------------------------------------------
 # Edit Powershell profile file
@@ -24,6 +23,7 @@ $CHEZMOI = "~/.local/share/chezmoi/"
 # ------------------------------------------------------------------------------
 Set-Alias -Name vim nvim
 Set-Alias -Name vi nvim
+Set-Alias -Name lg -Value lazygit
 
 $VIM   = "$env:LOCALAPPDATA/nvim"
 $SHADA = "$env:LOCALAPPDATA/nvim-data/shada/main.shada.tmp.X"
