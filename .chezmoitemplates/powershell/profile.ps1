@@ -28,6 +28,32 @@ Set-Alias -Name lg -Value lazygit
 $VIM   = "$env:LOCALAPPDATA/nvim"
 $SHADA = "$env:LOCALAPPDATA/nvim-data/shada/main.shada.tmp.X"
 
+# Enable vim on the command line
+Set-PSReadLineOption -EditMode Vi
+
+# Show mode indicator (Newer PSReadLine versions)
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
+    param([PSReadLineMode]$Mode)
+    switch ($Mode) {
+        'Command' {
+            $Host.UI.RawUI.WindowTitle = " (NORMAL) "
+        }
+        'Insert' {
+            $Host.UI.RawUI.WindowTitle = " (INSERT) "
+        }
+        'Visual' {
+            $Host.UI.RawUI.WindowTitle = " (VISUAL) "
+        }
+    }
+}
+
+# Bind 'j' and 'k' for history search in Command mode
+Set-PSReadLineKeyHandler -Chord 'k' -ViMode Command -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Chord 'j' -ViMode Command -Function HistorySearchForward
+
+# Ensure Ctrl+l clears the screen in Insert mode
+Set-PSReadLineKeyHandler -Chord 'Ctrl+l' -ViMode Insert -Function ClearScreen
+
 
 # ------------------------------------------------------------------------------
 #   DEV
