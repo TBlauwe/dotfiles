@@ -1,6 +1,8 @@
 # ------------------------------------------------------------------------------
 # 	COMMON
 # ------------------------------------------------------------------------------
+Set-PSReadlineOption -BellStyle None # Disable beep sound
+
 
 # ----[ profile ]----------------------------------------------------------------
 # Edit Powershell profile file
@@ -30,22 +32,6 @@ $SHADA = "$env:LOCALAPPDATA/nvim-data/shada/main.shada.tmp.X"
 
 # Enable vim on the command line
 Set-PSReadLineOption -EditMode Vi
-
-# Show mode indicator (Newer PSReadLine versions)
-Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
-    param([PSReadLineMode]$Mode)
-    switch ($Mode) {
-        'Command' {
-            $Host.UI.RawUI.WindowTitle = " (NORMAL) "
-        }
-        'Insert' {
-            $Host.UI.RawUI.WindowTitle = " (INSERT) "
-        }
-        'Visual' {
-            $Host.UI.RawUI.WindowTitle = " (VISUAL) "
-        }
-    }
-}
 
 # Bind 'j' and 'k' for history search in Command mode
 Set-PSReadLineKeyHandler -Chord 'k' -ViMode Command -Function HistorySearchBackward
