@@ -2,14 +2,8 @@ return {
   {
     'nvim-mini/mini.nvim',
     version = '*',
-    keys = {
-      { "<leader>e", "<cmd>lua MiniFiles.open()<cr>", desc = "MiniFiles" },
-    },
     config = function()
       require('mini.icons').setup()
-
-      -- Oil.nvim equivalent
-      require('mini.files').setup()
 
       -- Better Around/Inside textobjects
       --
@@ -71,6 +65,12 @@ return {
       input       = { enabled = true },
       notifier    = { enabled = true },
       picker      = { enabled = true },
+      explorer    = { 
+        enabled = true,
+        replace_netrw = true, -- Replace netrw with the snacks explorer
+        trash = true, -- Use the system trash when deleting files
+        git_status = true,
+      },
       scope       = { enabled = true },
       terminal    = { enabled = true },
       words       = { enabled = true },
@@ -84,6 +84,7 @@ return {
       { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
       { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
       { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
+      { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
       -- find
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
       { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
@@ -95,6 +96,7 @@ return {
       -- Grep
       { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
       { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
+      { "<leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
       { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word", mode = { "n", "x" } },
 
       -- Search
