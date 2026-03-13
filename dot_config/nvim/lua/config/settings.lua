@@ -45,9 +45,21 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 --------------------------------------------------------------------------------
 --- MISCELLENEAOUS
 --------------------------------------------------------------------------------
-vim.schedule(function()
-  vim.o.clipboard = "unnamedplus" -- Sync clipboard between OS and NVim
-end)
+-- Use OSC 52 for clipboard operations
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
+
+-- Optional: Automatically sync with system clipboard
+vim.opt.clipboard = "unnamedplus"
 
 
 -- Highlight text for some time after yanking
